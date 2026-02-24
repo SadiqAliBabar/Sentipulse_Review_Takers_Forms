@@ -1,0 +1,1549 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sweet Affairs | Feedback</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Dancing+Script:wght@700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --primary: #000000;
+            --primary-rgb: 0, 0, 0;
+            --bg-color: #edf1f7;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+            background-color: var(--bg-color);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px 16px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* ===== BACKGROUND ORBS ===== */
+        .bg-orbs {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .bg-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(90px);
+        }
+
+        .bg-orb--1 {
+            width: 600px;
+            height: 600px;
+            top: -150px;
+            left: -120px;
+            background: rgba(0, 0, 0, 0.05);
+        }
+
+        .bg-orb--2 {
+            width: 500px;
+            height: 500px;
+            bottom: -120px;
+            right: -100px;
+            background: rgba(0, 0, 0, 0.03);
+        }
+
+        .bg-orb--3 {
+            width: 350px;
+            height: 350px;
+            top: 45%;
+            left: 60%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.02);
+        }
+
+        .container {
+            max-width: 700px;
+            width: 100%;
+            position: relative;
+            z-index: 1;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.55);
+            backdrop-filter: blur(20px) saturate(160%);
+            -webkit-backdrop-filter: blur(20px) saturate(160%);
+            border: 1px solid rgba(255, 255, 255, 0.85);
+            border-radius: 24px;
+            padding: 40px 30px;
+            box-shadow:
+                0 15px 45px rgba(0, 0, 0, 0.05),
+                0 4px 12px rgba(0, 0, 0, 0.02);
+            margin-bottom: 20px;
+        }
+
+        .brand-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .brand-logo-text {
+            font-family: 'Dancing Script', cursive;
+            font-size: 38px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #000 0%, #333 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        .logo-glass-card {
+            background: rgba(255, 255, 255, 0.45);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.7);
+            padding: 12px 24px;
+            border-radius: 20px;
+            display: inline-block;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.03);
+            margin-bottom: 30px;
+        }
+
+        .main-question {
+            text-align: center;
+            color: #000;
+            font-size: 1.8em;
+            font-weight: 700;
+            margin-bottom: 40px;
+            line-height: 1.3;
+        }
+
+        .step {
+            display: none;
+        }
+
+        .step.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ===== EMOJI RATING ===== */
+        .emoji-container {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: nowrap;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin: 30px 0;
+            padding: 0;
+            gap: 6px;
+        }
+
+        .emoji-option {
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            text-align: center;
+            flex: 1 1 0;
+            min-width: 0;
+        }
+
+        .emoji-option:hover {
+            transform: scale(1.1);
+        }
+
+        .emoji-circle {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 38px;
+            margin: 0 auto 8px;
+            background: rgba(0, 0, 0, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            transition: all 0.3s ease;
+        }
+
+        .emoji-option.selected .emoji-circle {
+            transform: scale(1.15) translateY(-5px);
+            background: rgba(255, 255, 255, 0.9);
+            border-color: #000;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .emoji-label {
+            font-size: 0.75em;
+            color: #000;
+            font-weight: 600;
+            display: block;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* ===== ASPECT BUTTONS ===== */
+        .aspect-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin: 30px 0;
+        }
+
+        .aspect-button {
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            border-radius: 18px;
+            padding: 20px;
+            font-size: 1.1em;
+            color: #000;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            font-weight: 700;
+        }
+
+        .aspect-button:hover {
+            background: rgba(255, 255, 255, 0.7);
+            transform: translateY(-2px);
+        }
+
+        .aspect-button.selected {
+            background: #000;
+            color: white;
+            border-color: #000;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        /* ===== SECTION TITLE ===== */
+        .section-title {
+            background: rgba(0, 0, 0, 0.05);
+            color: #000;
+            padding: 18px 20px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            font-size: 1.2em;
+            font-weight: 800;
+            text-align: center;
+            border: 1px dashed rgba(0, 0, 0, 0.15);
+        }
+
+        /* ===== RATING STARS ===== */
+        .star-rating {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 30px 0;
+        }
+
+        .star {
+            font-size: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            filter: grayscale(100%);
+        }
+
+        .star:hover {
+            filter: grayscale(0%);
+            transform: scale(1.1);
+        }
+
+        .star.selected {
+            filter: grayscale(0%);
+            transform: scale(1.1);
+        }
+
+        /* ===== CHECKBOX OPTIONS ===== */
+        .options-container {
+            margin: 20px 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .option-item {
+            position: relative;
+            margin-bottom: 0;
+        }
+
+        .option-item input[type="checkbox"] {
+            position: absolute;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .option-item label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 10px;
+            background: rgba(255, 255, 255, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.95em;
+            text-align: center;
+            font-weight: 600;
+            min-height: 48px;
+            line-height: 1.3;
+            color: #000;
+        }
+
+        .option-item input[type="checkbox"]:checked+label {
+            background: #000;
+            color: white;
+            border-color: #000;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .option-item label:hover {
+            background: rgba(255, 255, 255, 0.7);
+            border-color: rgba(0, 0, 0, 0.1);
+            transform: translateY(-1px);
+        }
+
+        /* ===== FORM INPUTS ===== */
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 16px;
+            background: rgba(255, 255, 255, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            font-size: 1em;
+            transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif;
+            backdrop-filter: blur(5px);
+            outline: none;
+            color: #000;
+        }
+
+        .form-input:focus {
+            background: rgba(255, 255, 255, 0.9);
+            border-color: #000;
+            box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
+        }
+
+        textarea.form-input {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .form-input::placeholder {
+            color: #999;
+        }
+
+        /* ===== USER DETAILS FORM ===== */
+        .user-details-container {
+            margin: 30px 0;
+        }
+
+        .input-wrapper {
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.45);
+            border: 1px solid rgba(255, 255, 255, 0.85);
+            border-radius: 18px;
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .input-wrapper:hover {
+            background: rgba(255, 255, 255, 0.65);
+            transform: translateY(-2px);
+        }
+
+        .input-wrapper:focus-within {
+            background: rgba(255, 255, 255, 0.9);
+            border-color: #000;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.05);
+            transform: translateY(-2px);
+        }
+
+        .input-icon {
+            font-size: 28px;
+            margin-right: 20px;
+            min-width: 40px;
+            text-align: center;
+        }
+
+        .input-content {
+            flex: 1;
+        }
+
+        .floating-label {
+            display: block;
+            font-size: 0.85em;
+            color: #000;
+            margin-bottom: 5px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .modern-input {
+            width: 100%;
+            border: none;
+            outline: none;
+            font-size: 1.1em;
+            color: #000;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 5px 0;
+            background: transparent;
+        }
+
+        .modern-input::placeholder {
+            color: #999;
+        }
+
+        /* ===== NAVIGATION BUTTONS ===== */
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 40px;
+            gap: 15px;
+        }
+
+        .btn {
+            padding: 15px 40px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            flex: 1;
+        }
+
+        .btn-primary {
+            background: #000;
+            color: white;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            background: #222;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-primary:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.4);
+            color: #000;
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.7);
+            transform: translateY(-2px);
+        }
+
+        .btn-skip {
+            background: transparent;
+            color: #000;
+            border: 2px solid #ddd;
+        }
+
+        .btn-skip:hover {
+            background: #f5f5f5;
+            border-color: #999;
+        }
+
+        /* ===== PROGRESS DOTS ===== */
+        .progress-dots {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        .progress-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #ddd;
+            transition: all 0.3s ease;
+        }
+
+        .progress-dot.active {
+            background: #000;
+            transform: scale(1.4);
+            box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .progress-dot.completed {
+            background: #999;
+        }
+
+        /* ===== MOBILE RESPONSIVE ===== */
+
+        @media (max-width: 768px) {
+            body {
+                padding: 12px;
+            }
+
+            .container {
+                max-width: 100%;
+            }
+
+            .card {
+                padding: 28px 20px;
+            }
+
+            .main-question {
+                font-size: 1.4em;
+                margin-bottom: 24px;
+            }
+
+            .emoji-container {
+                gap: 8px;
+                margin: 20px 0;
+                padding: 0;
+            }
+
+            .emoji-circle {
+                width: 52px;
+                height: 52px;
+                font-size: 32px;
+            }
+
+            .emoji-label {
+                font-size: 0.72em;
+            }
+
+            .star {
+                font-size: 38px;
+            }
+
+            .btn {
+                padding: 13px 20px;
+                font-size: 1em;
+            }
+
+            input[type="text"],
+            input[type="tel"],
+            input[type="email"],
+            textarea {
+                font-size: 16px; /* prevents iOS zoom */
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 8px;
+            }
+
+            .card {
+                padding: 20px 14px;
+                border-radius: 16px;
+            }
+
+            .main-question {
+                font-size: 1.25em;
+                margin-bottom: 18px;
+            }
+
+            .emoji-container {
+                gap: 4px;
+                margin: 16px 0;
+            }
+
+            .emoji-option {
+                padding: 4px 2px;
+            }
+
+            .emoji-circle {
+                width: 46px;
+                height: 46px;
+                font-size: 26px;
+                margin-bottom: 6px;
+            }
+
+            .emoji-label {
+                font-size: 0.65em;
+            }
+
+            .star {
+                font-size: 34px;
+            }
+
+            .star-rating {
+                gap: 6px;
+                margin: 20px 0;
+            }
+
+            .aspect-button {
+                padding: 14px 12px;
+                font-size: 1em;
+                border-radius: 12px;
+            }
+
+            .aspect-grid {
+                gap: 10px;
+                margin: 16px 0;
+            }
+
+            .option-item label {
+                padding: 10px 8px;
+                font-size: 0.85em;
+                min-height: 44px;
+            }
+
+            .options-container {
+                margin: 12px 0;
+                gap: 8px;
+            }
+
+            .nav-buttons {
+                margin-top: 24px;
+                gap: 10px;
+            }
+
+            .btn {
+                padding: 13px 16px;
+                font-size: 0.95em;
+            }
+
+            .input-wrapper {
+                padding: 14px;
+                margin-bottom: 14px;
+            }
+
+            .input-icon {
+                font-size: 22px;
+                margin-right: 12px;
+                min-width: 30px;
+            }
+
+            .modern-input {
+                font-size: 1em;
+            }
+
+            .floating-label {
+                font-size: 0.78em;
+            }
+
+            .progress-dots {
+                gap: 7px;
+                margin-bottom: 18px;
+            }
+
+            .progress-dot {
+                width: 8px;
+                height: 8px;
+            }
+
+            textarea.form-input {
+                min-height: 100px;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .card {
+                padding: 16px 10px;
+            }
+
+            .main-question {
+                font-size: 1.15em;
+            }
+
+            .emoji-container {
+                gap: 2px;
+            }
+
+            .emoji-circle {
+                width: 40px;
+                height: 40px;
+                font-size: 22px;
+            }
+
+            .emoji-label {
+                font-size: 0.58em;
+            }
+
+            .star {
+                font-size: 28px;
+            }
+
+            .star-rating {
+                gap: 4px;
+            }
+
+            .btn {
+                padding: 12px 10px;
+                font-size: 0.88em;
+            }
+        }
+
+        @media (max-height: 500px) and (orientation: landscape) {
+            body {
+                padding: 8px;
+                align-items: flex-start;
+            }
+
+            .card {
+                padding: 14px;
+            }
+
+            .main-question {
+                font-size: 1.1em;
+                margin-bottom: 12px;
+            }
+
+            .emoji-container {
+                margin: 10px 0;
+            }
+
+            .emoji-circle {
+                width: 40px;
+                height: 40px;
+                font-size: 22px;
+            }
+        }
+
+        @media (hover: none) and (pointer: coarse) {
+            .emoji-option,
+            .btn,
+            .aspect-button,
+            .option-item label {
+                min-height: 44px;
+            }
+
+            .emoji-option:hover,
+            .star:hover,
+            .aspect-button:hover {
+                transform: none;
+            }
+
+            .emoji-option:active {
+                transform: scale(0.92);
+            }
+
+            .star:active,
+            .aspect-button:active {
+                transform: scale(0.95);
+            }
+        }
+
+        /* ===== GOODBYE / THANK-YOU PAGE ===== */
+        .goodbye-page {
+            position: relative;
+            min-height: 480px;
+            background: rgba(255, 255, 255, 0.45);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: -40px -30px -40px -30px;
+            padding: 60px 30px;
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.02);
+        }
+
+        .goodbye-bg-circles {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+        }
+
+        .goodbye-circle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .goodbye-circle.c1 {
+            width: 280px;
+            height: 280px;
+            top: -80px;
+            right: -60px;
+        }
+
+        .goodbye-circle.c2 {
+            width: 180px;
+            height: 180px;
+            bottom: -50px;
+            left: -40px;
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .goodbye-circle.c3 {
+            width: 100px;
+            height: 100px;
+            top: 40%;
+            left: 10%;
+            background: rgba(255, 255, 255, 0.06);
+        }
+
+        .goodbye-content {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            color: #000;
+            max-width: 420px;
+            animation: goodbyeFadeIn 0.6s ease both;
+        }
+
+        @keyframes goodbyeFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .goodbye-icon {
+            font-size: 72px;
+            margin-bottom: 24px;
+            display: block;
+            animation: goodbyeBounce 0.6s 0.3s ease both;
+        }
+
+        @keyframes goodbyeBounce {
+            0% {
+                transform: scale(0);
+                opacity: 0;
+            }
+
+            60% {
+                transform: scale(1.15);
+                opacity: 1;
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .goodbye-message {
+            font-size: 1.2em;
+            line-height: 1.7;
+            font-weight: 500;
+            margin-bottom: 32px;
+            opacity: 0.97;
+            letter-spacing: 0.01em;
+        }
+
+        .goodbye-divider {
+            width: 48px;
+            height: 2px;
+            background: rgba(0, 0, 0, 0.15);
+            margin: 0 auto 24px;
+            border-radius: 2px;
+        }
+
+        .goodbye-tagline {
+            font-size: 1.05em;
+            opacity: 0.88;
+            margin-bottom: 8px;
+            color: #000;
+        }
+
+        .goodbye-team {
+            font-size: 0.88em;
+            opacity: 0.5;
+            letter-spacing: 0.04em;
+            color: #000;
+        }
+
+        @media (max-width: 480px) {
+            .goodbye-page {
+                margin: -20px -14px -20px -14px;
+                padding: 48px 20px;
+                min-height: 420px;
+            }
+
+            .goodbye-icon {
+                font-size: 56px;
+            }
+
+            .goodbye-message {
+                font-size: 1.05em;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="bg-orbs" aria-hidden="true">
+        <div class="bg-orb bg-orb--1"></div>
+        <div class="bg-orb bg-orb--2"></div>
+        <div class="bg-orb bg-orb--3"></div>
+    </div>
+
+    <div class="container">
+        <div class="card">
+            <div class="brand-header">
+                <div class="logo-glass-card">
+                    <span class="brand-logo-text">Sweet Affairs</span>
+                </div>
+            </div>
+
+            <div class="progress-dots" id="progressDots"></div>
+
+            <!-- Step 0: Welcome -->
+            <div id="step0" class="step active">
+                <div class="main-question" style="margin-bottom: 20px;">Your opinion & feedback matter to us</div>
+                <p style="text-align: center; color: #000; font-size: 1.2em; margin-bottom: 40px; line-height: 1.6;">
+                    It takes only 30 seconds
+                </p>
+                <div class="nav-buttons" style="justify-content: center;">
+                    <button class="btn btn-primary" id="startSurvey"
+                        style="min-width: 200px; padding: 18px 40px; font-size: 1.2em;">Start</button>
+                </div>
+            </div>
+
+            <!-- Step 1: Overall Experience -->
+            <div id="step1" class="step">
+                <div class="main-question">How did we do today?</div>
+                <div class="emoji-container">
+                    <div class="emoji-option" data-rating="1">
+                        <div class="emoji-circle">😢</div>
+                        <div class="emoji-label">Very Bad</div>
+                    </div>
+                    <div class="emoji-option" data-rating="2">
+                        <div class="emoji-circle">😕</div>
+                        <div class="emoji-label">Bad</div>
+                    </div>
+                    <div class="emoji-option" data-rating="3">
+                        <div class="emoji-circle">😐</div>
+                        <div class="emoji-label">Okay</div>
+                    </div>
+                    <div class="emoji-option" data-rating="4">
+                        <div class="emoji-circle">😊</div>
+                        <div class="emoji-label">Good</div>
+                    </div>
+                    <div class="emoji-option" data-rating="5">
+                        <div class="emoji-circle">😍</div>
+                        <div class="emoji-label">Excellent</div>
+                    </div>
+                </div>
+                <div class="nav-buttons">
+                    <button class="btn btn-primary" id="nextStep1" disabled>Next</button>
+                </div>
+            </div>
+
+            <!-- Step 2: What Can We Improve -->
+            <div id="step2" class="step">
+                <div class="main-question" id="step2Question"></div>
+                <div class="aspect-grid" id="aspectGrid">
+                    <!-- Populated dynamically from API -->
+                </div>
+                <div class="nav-buttons">
+                    <button class="btn btn-secondary" id="backStep2">Back</button>
+                    <button class="btn btn-primary" id="nextStep2">Next</button>
+                </div>
+            </div>
+
+            <!-- Step 3: Aspect Rating & Questions (Dynamic) -->
+            <div id="step3" class="step">
+                <div id="aspectContainer"></div>
+            </div>
+
+            <!-- Step 4: Custom Review -->
+            <div id="step4" class="step">
+                <div class="main-question">Anything else you'd like to share?</div>
+                <div class="form-group">
+                    <textarea class="form-input" id="customReview"
+                        placeholder="Tell us more about your experience..."></textarea>
+                </div>
+                <div class="nav-buttons">
+                    <button class="btn btn-secondary" id="backStep4">Back</button>
+                    <button class="btn btn-skip" id="skipStep4">Skip</button>
+                    <button class="btn btn-primary" id="nextStep4">Next</button>
+                </div>
+            </div>
+
+            <!-- Step 5: User Details -->
+            <div id="step5" class="step">
+                <div class="main-question" id="step5Message">
+                    Help us get back to you with your feedback
+                </div>
+
+                <div class="user-details-container">
+                    <div class="input-wrapper">
+                        <div class="input-icon">👤</div>
+                        <div class="input-content">
+                            <label class="floating-label">Your Name *</label>
+                            <input type="text" class="modern-input" id="userName" required>
+                        </div>
+                    </div>
+
+                    <div class="input-wrapper">
+                        <div class="input-icon">📱</div>
+                        <div class="input-content">
+                            <label class="floating-label">Phone Number *</label>
+                            <input type="tel" class="modern-input" id="userPhone" inputmode="numeric"
+                                oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="03001234567"
+                                required>
+                        </div>
+                    </div>
+
+                    <div class="input-wrapper">
+                        <div class="input-icon">✉️</div>
+                        <div class="input-content">
+                            <label class="floating-label">Email <span
+                                    style="color: #999; font-size: 0.85em;">(Optional)</span></label>
+                            <input type="email" class="modern-input" id="userEmail" placeholder="e.g. name@email.com">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="nav-buttons">
+                    <button class="btn btn-secondary" id="backStep5">Back</button>
+                    <button class="btn btn-primary" id="submitFeedback">Submit</button>
+                </div>
+            </div>
+
+            <!-- Step 6: Thank You Page -->
+            <div id="step6" class="step">
+                <div id="successContent"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Step 2 question — keyed by overall rating
+        const RATING_QUESTIONS = {
+            1: "We sincerely apologize. Please tell us what went wrong so we can make this right.",
+            2: "We're sorry we missed the mark.\nWhat went wrong?",
+            3: "What didn't meet your expectations?",
+            4: "What could we improve to make your next visit a 5-star one?",
+            5: "What did you love most about your experience?"
+        };
+
+        // Step 5 contact subtitle — keyed by overall rating
+        const RATING_CONTACT_MESSAGES = {
+            1: "We'd really appreciate the opportunity to make this right. Please share your details.",
+            2: "We'd really appreciate the opportunity to make this right. Please share your details.",
+            3: "We'd love to understand your experience better. Please share your details.",
+            4: "Help us make your next visit a 5-star one. Please share your details.",
+            5: "Let's make your next visit just as great — or even better! Please share your details."
+        };
+
+        // Survey state
+        const surveyData = {
+            overallRating: 0,
+            selectedAspects: [],
+            aspectRatings: {},
+            aspectAnswers: {},
+            customReview: '',
+            userName: '',
+            userPhone: '',
+            userEmail: ''
+        };
+
+        let currentStep = 0;
+        let currentAspectIndex = 0;
+
+        // Aspect categories and questions — defaults, overwritten by API if available
+        let categories = ['Food', 'Drinks', 'Service', 'Cleanliness', 'Ambiance', 'Price'];
+
+        // Sentiment mapping: overall 1-2 → negative, 3 → neutral, 4 → improvement, 5 → positive
+        let aspectQuestions = {
+            "food": {
+                "negative":    { "question": "What went wrong?",                        "options": ["Quality/Taste", "Quantity/Portion Size", "Temperature", "Presentation", "Hygiene"] },
+                "neutral":     { "question": "What needs to be improved?",              "options": ["Quality/Taste", "Quantity/Portion Size", "Temperature", "Presentation", "Hygiene"] },
+                "improvement": { "question": "Improvement in what will make it 5-star?","options": ["Quality/Taste", "Quantity/Portion Size", "Temperature", "Presentation", "Hygiene"] },
+                "positive":    { "question": "What did you love?",                      "options": ["Quality/Taste", "Quantity/Portion Size", "Temperature", "Presentation", "Hygiene"] }
+            },
+            "drinks": {
+                "negative":    { "question": "What went wrong?",                        "options": ["Quality/Taste", "Quantity/Portion Size", "Temperature", "Presentation", "Hygiene"] },
+                "neutral":     { "question": "What needs to be improved?",              "options": ["Quality/Taste", "Quantity/Portion Size", "Temperature", "Presentation", "Hygiene"] },
+                "improvement": { "question": "Improvement in what will make it 5-star?","options": ["Quality/Taste", "Quantity/Portion Size", "Temperature", "Presentation", "Hygiene"] },
+                "positive":    { "question": "What did you love?",                      "options": ["Quality/Taste", "Quantity/Portion Size", "Temperature", "Presentation", "Hygiene"] }
+            },
+            "service": {
+                "negative":    { "question": "What went wrong?",                        "options": ["Order Taking Time", "Order Serving Time", "Order Accuracy", "Staff Behavior", "Staff Hygiene", "Staff Menu Knowledge"] },
+                "neutral":     { "question": "What needs to be improved?",              "options": ["Order Taking Time", "Order Serving Time", "Order Accuracy", "Staff Behavior", "Staff Hygiene", "Staff Menu Knowledge"] },
+                "improvement": { "question": "Improvement in what will make it 5-star?","options": ["Order Taking Time", "Order Serving Time", "Order Accuracy", "Staff Behavior", "Staff Hygiene", "Staff Menu Knowledge"] },
+                "positive":    { "question": "What did you love?",                      "options": ["Order Taking Time", "Order Serving Time", "Order Accuracy", "Staff Behavior", "Staff Hygiene", "Staff Menu Knowledge"] }
+            },
+            "cleanliness": {
+                "negative":    { "question": "What went wrong?",                        "options": ["Dining Area", "Waiting/Ordering Area", "Parking Area", "Washrooms"] },
+                "neutral":     { "question": "What needs to be improved?",              "options": ["Dining Area", "Waiting/Ordering Area", "Parking Area", "Washrooms"] },
+                "improvement": { "question": "Improvement in what will make it 5-star?","options": ["Dining Area", "Waiting/Ordering Area", "Parking Area", "Washrooms"] },
+                "positive":    { "question": "What did you love?",                      "options": ["Dining Area", "Waiting/Ordering Area", "Parking Area", "Washrooms"] }
+            },
+            "ambiance": {
+                "negative":    { "question": "What went wrong?",                        "options": ["Lighting", "Music/Volume", "Temperature", "Fragrance/Smell"] },
+                "neutral":     { "question": "What needs to be improved?",              "options": ["Lighting", "Music/Volume", "Temperature", "Fragrance/Smell"] },
+                "improvement": { "question": "Improvement in what will make it 5-star?","options": ["Lighting", "Music/Volume", "Temperature", "Fragrance/Smell"] },
+                "positive":    { "question": "What did you love?",                      "options": ["Lighting", "Music/Volume", "Temperature", "Fragrance/Smell"] }
+            },
+            "price": {
+                "negative":    { "question": "What went wrong?",                        "options": ["Value For Money", "Billing Accuracy", "Payment Mode"] },
+                "neutral":     { "question": "What needs to be improved?",              "options": ["Value For Money", "Billing Accuracy", "Payment Mode"] },
+                "improvement": { "question": "Improvement in what will make it 5-star?","options": ["Value For Money", "Billing Accuracy", "Payment Mode"] },
+                "positive":    { "question": "What did you love?",                      "options": ["Value For Money", "Billing Accuracy", "Payment Mode"] }
+            }
+        };
+
+        // Load categories from API (overwrites defaults if available)
+        async function loadCategories() {
+            try {
+                const response = await fetch('/api/categories');
+                if (!response.ok) throw new Error('API unavailable');
+                const data = await response.json();
+                categories = data.categories;
+                aspectQuestions = data.questions;
+            } catch {
+                // Use built-in defaults
+            }
+            renderAspectGrid();
+        }
+
+        function renderAspectGrid() {
+            const aspectGrid = document.getElementById('aspectGrid');
+            aspectGrid.innerHTML = '';
+            categories.forEach(category => {
+                const button = document.createElement('div');
+                button.className = 'aspect-button';
+                button.dataset.aspect = category.toLowerCase();
+                button.textContent = category;
+                aspectGrid.appendChild(button);
+            });
+            setupAspectButtonListeners();
+        }
+
+        function init() {
+            loadCategories();
+            setupEventListeners();
+            goToStep(0);
+        }
+
+        function updateProgressDots() {
+            const dotsContainer = document.getElementById('progressDots');
+            dotsContainer.innerHTML = '';
+
+            let totalSteps = 4;
+            if (surveyData.selectedAspects.length > 0) {
+                totalSteps += surveyData.selectedAspects.length;
+            }
+
+            for (let i = 0; i < Math.min(totalSteps, 10); i++) {
+                const dot = document.createElement('div');
+                dot.className = 'progress-dot';
+                if (i < currentStep - 1) dot.classList.add('completed');
+                if (i === currentStep - 1) dot.classList.add('active');
+                dotsContainer.appendChild(dot);
+            }
+        }
+
+        function setupAspectButtonListeners() {
+            // Replace nodes to clear any existing listeners before re-attaching
+            document.querySelectorAll('.aspect-button').forEach(button => {
+                button.replaceWith(button.cloneNode(true));
+            });
+
+            document.querySelectorAll('.aspect-button').forEach(button => {
+                button.addEventListener('click', function () {
+                    this.classList.toggle('selected');
+                    const aspect = this.dataset.aspect;
+
+                    if (this.classList.contains('selected')) {
+                        if (!surveyData.selectedAspects.includes(aspect)) {
+                            surveyData.selectedAspects.push(aspect);
+                        }
+                    } else {
+                        surveyData.selectedAspects = surveyData.selectedAspects.filter(a => a !== aspect);
+                    }
+                });
+            });
+        }
+
+        function setupEventListeners() {
+            // Step 0: Welcome
+            document.getElementById('startSurvey').addEventListener('click', () => {
+                goToStep(1);
+            });
+
+            // Step 1: Overall Rating
+            document.querySelectorAll('.emoji-option').forEach(option => {
+                option.addEventListener('click', function () {
+                    document.querySelectorAll('.emoji-option').forEach(e => e.classList.remove('selected'));
+                    this.classList.add('selected');
+                    surveyData.overallRating = parseInt(this.dataset.rating);
+                    document.getElementById('nextStep1').disabled = false;
+                });
+            });
+
+            document.getElementById('nextStep1').addEventListener('click', () => {
+                document.getElementById('step2Question').textContent =
+                    RATING_QUESTIONS[surveyData.overallRating] || "What can we improve?";
+                goToStep(2);
+            });
+
+            document.getElementById('backStep2').addEventListener('click', () => {
+                goToStep(1);
+            });
+
+            document.getElementById('nextStep2').addEventListener('click', () => {
+                if (surveyData.selectedAspects.length > 0) {
+                    currentAspectIndex = 0;
+                    showAspectPage();
+                } else {
+                    alert('Please select at least one aspect to continue.');
+                }
+            });
+
+            // Step 4: Custom Review
+            document.getElementById('backStep4').addEventListener('click', () => {
+                if (surveyData.selectedAspects.length > 0) {
+                    currentAspectIndex = surveyData.selectedAspects.length - 1;
+                    showAspectPage();
+                } else {
+                    goToStep(2);
+                }
+            });
+
+            document.getElementById('skipStep4').addEventListener('click', () => {
+                goToStep(5);
+            });
+
+            document.getElementById('nextStep4').addEventListener('click', () => {
+                surveyData.customReview = document.getElementById('customReview').value;
+                goToStep(5);
+            });
+
+            // Step 5: User Details
+            document.getElementById('backStep5').addEventListener('click', () => {
+                goToStep(4);
+            });
+
+            document.getElementById('submitFeedback').addEventListener('click', async () => {
+                const name = document.getElementById('userName').value.trim();
+                const phone = document.getElementById('userPhone').value.trim();
+                const email = document.getElementById('userEmail').value.trim();
+
+                if (!name) {
+                    alert('Please enter your name.');
+                    return;
+                }
+
+                const phoneRegex = /^\d{10,15}$/;
+                if (!phone) {
+                    alert('Please enter your phone number.');
+                    return;
+                }
+                if (!phoneRegex.test(phone)) {
+                    alert('Please enter a valid phone number (10-15 digits).');
+                    return;
+                }
+
+                if (email) {
+                    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                    if (!emailRegex.test(email)) {
+                        alert('Please enter a valid email address.');
+                        return;
+                    }
+                }
+
+                surveyData.userName = name;
+                surveyData.userPhone = phone;
+                surveyData.userEmail = email;
+                surveyData.humanReadableReview = surveyData.customReview.trim() || null;
+
+                const apiData = prepareApiData();
+
+                const submitBtn = document.getElementById('submitFeedback');
+                const originalText = submitBtn.textContent;
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Submitting...';
+
+                try {
+                    const response = await fetch('/api/submit-survey', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(apiData)
+                    });
+
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(errorData.detail || 'Failed to submit survey');
+                    }
+
+                    showSuccessMessage();
+
+                } catch (error) {
+                    alert('Sorry, there was an error submitting your feedback. Please try again or contact support.');
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = originalText;
+                }
+            });
+        }
+
+        function showAspectPage() {
+            const aspect = surveyData.selectedAspects[currentAspectIndex];
+            const container = document.getElementById('aspectContainer');
+
+            const aspectNames = {};
+            categories.forEach(cat => {
+                aspectNames[cat.toLowerCase()] = cat;
+            });
+
+            container.innerHTML = `
+                <div class="main-question" style="font-size: 1.4em; margin-top: 20px; margin-bottom: 20px;">
+                    How would you rate our ${aspectNames[aspect].toLowerCase()}?
+                </div>
+                <div class="star-rating" id="starRating">
+                    <span class="star" data-rating="1">⭐</span>
+                    <span class="star" data-rating="2">⭐</span>
+                    <span class="star" data-rating="3">⭐</span>
+                    <span class="star" data-rating="4">⭐</span>
+                    <span class="star" data-rating="5">⭐</span>
+                </div>
+                <div id="questionsSection" style="display: none; margin-top: 40px; border-top: 2px solid #E9ECEF; padding-top: 30px;"></div>
+                <div class="nav-buttons">
+                    <button class="btn btn-secondary" id="backAspect">Back</button>
+                    <button class="btn btn-primary" id="nextAspect" disabled>Next</button>
+                </div>
+            `;
+
+            const stars = container.querySelectorAll('.star');
+            const currentRating = surveyData.aspectRatings[aspect] || 0;
+
+            stars.forEach((s, i) => {
+                s.style.filter = i < currentRating ? 'grayscale(0%)' : 'grayscale(100%)';
+                if (i < currentRating) s.classList.add('selected');
+            });
+
+            if (currentRating > 0) {
+                showQuestionsForRating(aspect, currentRating);
+                document.getElementById('nextAspect').disabled = false;
+            }
+
+            stars.forEach((star, index) => {
+                star.addEventListener('click', function () {
+                    const rating = parseInt(this.dataset.rating);
+                    surveyData.aspectRatings[aspect] = rating;
+
+                    stars.forEach((s, i) => {
+                        s.classList.toggle('selected', i < rating);
+                        s.style.filter = i < rating ? 'grayscale(0%)' : 'grayscale(100%)';
+                    });
+
+                    showQuestionsForRating(aspect, rating);
+                    document.getElementById('nextAspect').disabled = false;
+                });
+
+                star.addEventListener('mouseenter', function () {
+                    const rating = parseInt(this.dataset.rating);
+                    stars.forEach((s, i) => {
+                        s.style.filter = i < rating ? 'grayscale(0%)' : 'grayscale(100%)';
+                    });
+                });
+
+                star.addEventListener('mouseleave', function () {
+                    const saved = surveyData.aspectRatings[aspect] || 0;
+                    stars.forEach((s, i) => {
+                        s.style.filter = i < saved ? 'grayscale(0%)' : 'grayscale(100%)';
+                    });
+                });
+            });
+
+            document.getElementById('backAspect').addEventListener('click', () => {
+                if (currentAspectIndex > 0) {
+                    currentAspectIndex--;
+                    showAspectPage();
+                } else {
+                    goToStep(2);
+                }
+            });
+
+            document.getElementById('nextAspect').addEventListener('click', () => {
+                currentAspectIndex++;
+                if (currentAspectIndex < surveyData.selectedAspects.length) {
+                    showAspectPage();
+                } else {
+                    goToStep(4);
+                }
+            });
+
+            goToStep(3);
+        }
+
+        function showQuestionsForRating(aspect, rating) {
+            const questionsSection = document.getElementById('questionsSection');
+
+            let sentiment;
+            if (rating <= 2)      sentiment = 'negative';
+            else if (rating === 3) sentiment = 'neutral';
+            else if (rating === 4) sentiment = 'improvement';
+            else                   sentiment = 'positive';
+
+            if (!aspectQuestions?.[aspect]?.[sentiment]) {
+                questionsSection.style.display = 'none';
+                return;
+            }
+
+            const questionData = aspectQuestions[aspect][sentiment];
+
+            const optionsHTML = questionData.options.map((option, index) => {
+                const isChecked = surveyData.aspectAnswers[aspect]?.includes(option);
+                return `
+                    <div class="option-item">
+                        <input type="checkbox" id="${aspect}_option_${index}" value="${option}" ${isChecked ? 'checked' : ''}>
+                        <label for="${aspect}_option_${index}">${option}</label>
+                    </div>
+                `;
+            }).join('');
+
+            questionsSection.innerHTML = `
+                <div class="main-question" style="font-size: 1.3em; margin-bottom: 20px;">
+                    ${questionData.question}
+                </div>
+                <div class="options-container">${optionsHTML}</div>
+            `;
+            questionsSection.style.display = 'block';
+
+            questionData.options.forEach((option, index) => {
+                document.getElementById(`${aspect}_option_${index}`).addEventListener('change', function () {
+                    if (!surveyData.aspectAnswers[aspect]) {
+                        surveyData.aspectAnswers[aspect] = [];
+                    }
+                    if (this.checked) {
+                        if (!surveyData.aspectAnswers[aspect].includes(option)) {
+                            surveyData.aspectAnswers[aspect].push(option);
+                        }
+                    } else {
+                        surveyData.aspectAnswers[aspect] = surveyData.aspectAnswers[aspect].filter(a => a !== option);
+                    }
+                });
+            });
+        }
+
+        function showSuccessMessage() {
+            const configs = {
+                1: { icon: '😞', message: "Thank you for bringing this to our attention. We take your feedback seriously and will review it immediately!" },
+                2: { icon: '😕', message: "Thank you for bringing this to our attention. We take your feedback seriously and will review it immediately!" },
+                3: { icon: '😐', message: "Thank you for sharing your honest feedback. We're continuously improving and truly value your input!" },
+                4: { icon: '😊', message: "Thank you for your feedback. We're working hard to earn that 5th star next time!" },
+                5: { icon: '😍', message: "Thank you for the 5 stars! We can't wait to welcome you again soon!" }
+            };
+
+            const cfg = configs[surveyData.overallRating] || configs[3];
+
+            const now = new Date();
+            const formattedDate = now.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+            const formattedTime = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
+
+            document.getElementById('successContent').innerHTML = `
+                <div class="goodbye-page">
+                    <div class="goodbye-bg-circles">
+                        <div class="goodbye-circle c1"></div>
+                        <div class="goodbye-circle c2"></div>
+                        <div class="goodbye-circle c3"></div>
+                    </div>
+                    <div class="goodbye-content">
+                        <div class="goodbye-icon">${cfg.icon}</div>
+                        <p class="goodbye-message">${cfg.message}</p>
+                        <div class="goodbye-divider"></div>
+                        <p class="goodbye-tagline">Have a wonderful day!</p>
+                        <p class="goodbye-team">Submitted on ${formattedDate} at ${formattedTime}</p>
+                    </div>
+                </div>
+            `;
+
+            goToStep(6);
+        }
+
+        function prepareApiData() {
+            const data = {
+                brand_name: "Sweet Affairs",
+                user: surveyData.userName,
+                rating: surveyData.overallRating,
+                text: surveyData.humanReadableReview || null,
+                date: new Date().toISOString(),
+                source: "in-house-survey",
+                review_url: null,
+                INHOUSE_Reviewer_Contact: surveyData.userPhone,
+                INHOUSE_Reviewer_EmailID: surveyData.userEmail || null
+            };
+
+            const categoryMapping = {};
+            categories.forEach(cat => {
+                categoryMapping[cat.toLowerCase()] = cat;
+            });
+
+            Object.keys(categoryMapping).forEach(formKey => {
+                const dbKey = categoryMapping[formKey];
+                data[`INHOUSE_Rating_${dbKey}`] = surveyData.aspectRatings[formKey] || null;
+                const answers = surveyData.aspectAnswers[formKey];
+                data[`INHOUSE_Selection_${dbKey}`] = (answers && answers.length > 0) ? answers : null;
+            });
+
+            return data;
+        }
+
+        function goToStep(stepNumber) {
+            document.querySelectorAll('.step').forEach(step => step.classList.remove('active'));
+            document.getElementById(`step${stepNumber}`).classList.add('active');
+            currentStep = stepNumber;
+            updateProgressDots();
+
+            if (stepNumber === 5) {
+                document.getElementById('step5Message').textContent =
+                    RATING_CONTACT_MESSAGES[surveyData.overallRating] || "Help us get back to you with your feedback";
+            }
+
+            document.getElementById('progressDots').style.display =
+                (stepNumber === 0 || stepNumber === 6) ? 'none' : 'flex';
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        init();
+    </script>
+</body>
+
+</html>

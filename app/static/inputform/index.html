@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SentiPulse Review Form</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Dancing+Script:wght@700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="config.js"></script>
+</head>
+
+<body>
+
+    <!-- BACKGROUND ORBS (give the glass cards something to blur over) -->
+    <div class="bg-orbs" aria-hidden="true">
+        <div class="bg-orb bg-orb--1"></div>
+        <div class="bg-orb bg-orb--2"></div>
+        <div class="bg-orb bg-orb--3"></div>
+    </div>
+
+    <div class="container">
+
+        <!-- LOGO -->
+        <div class="logo-section">
+            <div class="logo-glass-card">
+                <span class="logo-text">Sweet Affairs</span>
+            </div>
+        </div>
+
+        <!-- REVIEWS WRAPPER -->
+        <div id="reviewsWrapper">
+            <!-- Review cards are injected here by JS -->
+        </div>
+
+        <!-- GLOBAL ACTIONS -->
+        <div class="global-actions">
+            <button type="button" id="addMoreBtn">+ Add Review</button>
+            <button type="button" id="submitAllBtn">Upload All Reviews</button>
+        </div>
+
+        <!-- SUCCESS MODAL -->
+        <div id="successModal" class="modal">
+            <div class="modal-content glass-card">
+                <div class="success-icon-wrap">
+                    <span class="success-icon">✨</span>
+                </div>
+                <h3>All Done!</h3>
+                <p id="finalStatus">Your reviews have been processed.</p>
+                <div class="modal-actions" style="margin-top: 20px;">
+                    <button type="button" id="closeSuccess" class="btn-primary">Close Tab</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- DELETE CONFIRMATION MODAL -->
+        <div id="deleteModal" class="modal">
+            <div class="modal-content glass-card">
+
+                <h3>Delete Review?</h3>
+                <p>This action cannot be undone. Are you sure you want to remove this review?</p>
+                <div class="modal-actions">
+                    <button type="button" id="cancelDelete" class="btn-secondary">Cancel</button>
+                    <button type="button" id="confirmDelete" class="btn-danger">Delete</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- UPLOAD CONFIRMATION MODAL -->
+        <div id="confirmUploadModal" class="modal">
+            <div class="modal-content glass-card">
+                <h3>Ready to Upload?</h3>
+                <p>Wait! Once uploaded, these reviews cannot be Modified/Deleted. Are you sure you want to proceed?</p>
+                <div class="modal-actions">
+                    <button type="button" id="cancelUpload" class="btn-secondary">Wait, No</button>
+                    <button type="button" id="confirmUpload" class="btn-primary">Yes, Upload</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- EXPORT CHOICE MODAL -->
+        <div id="confirmExportModal" class="modal">
+            <div class="modal-content glass-card">
+                <div class="success-icon-wrap" style="background: rgba(0,0,0,0.03);">
+                    <span style="font-size: 32px;">📊</span>
+                </div>
+                <h3>Export to Excel?</h3>
+                <p>Would you like to export these current reviews to an Excel file before finishing?</p>
+                <div class="modal-actions">
+                    <button type="button" id="skipExport" class="btn-secondary">No, Skip</button>
+                    <button type="button" id="proceedWithExport" class="btn-primary">Yes, Export</button>
+                </div>
+            </div>
+        </div>
+    </div> <!-- End container -->
+
+    <!-- ERROR MODAL -->
+    <div id="errorModal" class="modal">
+        <div class="modal-content glass-card">
+            <div class="error-icon-wrap">
+                <span class="error-icon">✕</span>
+            </div>
+            <h3>Submission Failed</h3>
+            <p id="errorModalMessage">Something went wrong while saving your reviews.</p>
+            <div class="modal-actions">
+                <button type="button" id="closeError" class="btn-primary">Try Again</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
