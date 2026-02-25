@@ -16,4 +16,4 @@ wheels/
 .claude/
 
 # Generated QR code images
-scripts/qr_codes/
+# scripts/qr_codes/

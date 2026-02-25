@@ -27,10 +27,9 @@ def _resolve_db_collection(brand_name: str):
     key = (brand_name or "").strip().lower()
     entry = _BRAND_DB_MAP.get(key)
     if entry is None:
-        # Unknown brand — fall back to env defaults
-        return settings.DATABASE_NAME, settings.COLLECTION_NAME
+        raise ValueError(f"Unknown brand: '{brand_name}'. Add it to _BRAND_DB_MAP in routes.py.")
     db_name, collection = entry
-    if db_name is None:  # Ginyaki case
+    if db_name is None:  # Ginyaki — DB name is environment-specific
         db_name = settings.GINYAKI_DATABASE_NAME
     return db_name, collection
 # ── End brand mapping ───────────────────────────────────────
@@ -153,7 +152,7 @@ async def export_reviews(
         output.seek(0)
         
         # Return as downloadable file
-        filename = f"Reviews_Export_{settings.COLLECTION_NAME}.xlsx"
+        filename = f"Reviews_Export_{collection or 'export'}.xlsx"
         headers = {
             'Content-Disposition': f'attachment; filename="{filename}"'
         }
