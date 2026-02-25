@@ -126,7 +126,19 @@ body {
     text-align: center;
     margin-bottom: 24px;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.branch-address-display {
+    font-size: 11px;
+    color: #555;
+    font-weight: 500;
+    letter-spacing: 0.2px;
+    max-width: 480px;
+    text-align: center;
+    line-height: 1.5;
 }
 
 .logo-glass-card {
@@ -945,6 +957,216 @@ textarea {
     .bg-orb--3 {
         width: 200px;
         height: 200px;
+    }
+
+    /* Card header: let date/time drop to a second row */
+    .card-header {
+        flex-wrap: wrap;
+        white-space: normal;
+        padding: 8px 10px;
+    }
+
+    .header-left {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .review-date-container,
+    .review-time-container {
+        order: 10;
+        margin-left: 0;
+        margin-right: 0;
+        padding: 3px 7px;
+        min-width: unset;
+        flex-shrink: 1;
+    }
+
+    .date-text,
+    .time-text {
+        font-size: 10px;
+    }
+
+    /* Emoji buttons: 5 × 52px + 4 × 6px = 284px — fits 360px+ */
+    .emoji-row {
+        gap: 6px;
+    }
+
+    .emoji-btn {
+        width: 52px;
+        height: 48px;
+        font-size: 1.5rem;
+    }
+}
+
+@media (max-width: 360px) {
+    /* Emoji: 5 × 46px + 4 × 4px = 246px — fits 360px screens */
+    .emoji-row {
+        gap: 4px;
+    }
+
+    .emoji-btn {
+        width: 46px;
+        height: 42px;
+        font-size: 1.3rem;
+    }
+
+    .card-body {
+        padding: 16px 12px;
+    }
+
+    .review-label {
+        font-size: 10px;
+        letter-spacing: 0.8px;
+    }
+}
+
+/* ===== DATE-TIME ROW (inside card body, desktop) ===== */
+.card-datetime-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+}
+
+.card-datetime-row .review-date-container {
+    margin-left: 0;
+    margin-right: 0;
+}
+
+.card-datetime-row .review-time-container {
+    margin-right: 0;
+}
+
+/* ===== MOBILE TABS (hidden on desktop) ===== */
+.mobile-tabs {
+    display: none;
+}
+
+/* ===== RESPONSIVE — MOBILE FIRST (≤600px) ===== */
+@media (max-width: 600px) {
+    /* Allow page to scroll naturally */
+    body {
+        height: auto;
+        min-height: 100svh;
+        overflow: auto;
+        padding: 0;
+    }
+
+    .container {
+        height: auto;
+        min-height: 100svh;
+        padding: 16px 12px 100px;
+    }
+
+    #reviewsWrapper {
+        max-height: none;
+        flex: unset;
+        overflow-y: visible;
+        margin-bottom: 0;
+        padding-right: 0;
+    }
+
+    /* Show mobile tabs */
+    .mobile-tabs {
+        display: flex;
+        gap: 4px;
+        background: rgba(0, 0, 0, 0.04);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.55);
+        padding: 6px 12px;
+    }
+
+    /* Collapsed card hides tabs */
+    .review-card.collapsed .mobile-tabs {
+        display: none;
+    }
+
+    .mobile-tab {
+        flex: 1;
+        padding: 7px 12px;
+        border: none;
+        background: transparent;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        color: rgba(0, 0, 0, 0.4);
+        cursor: pointer;
+        border-radius: 8px;
+        transition: all 0.2s ease;
+    }
+
+    .mobile-tab.active {
+        background: rgba(255, 255, 255, 0.85);
+        color: #000;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    }
+
+    /* Default: show info column, hide ratings */
+    .column-right {
+        display: none;
+    }
+
+    /* When ratings tab is active */
+    .review-card[data-active-tab="ratings"] .column-left {
+        display: none;
+    }
+
+    .review-card[data-active-tab="ratings"] .column-right {
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* Date-time row: compact pill strip inside card body */
+    .card-datetime-row {
+        gap: 8px;
+        margin-bottom: 14px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .card-datetime-row .review-date-container,
+    .card-datetime-row .review-time-container {
+        flex: 1;
+        justify-content: center;
+        padding: 5px 10px;
+        min-width: unset;
+        border-radius: 8px;
+        margin: 0;
+    }
+
+    /* Fixed bottom action bar */
+    .global-actions {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        margin: 0;
+        padding: 12px 16px;
+        background: rgba(237, 241, 247, 0.94);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border-top: 1px solid rgba(255, 255, 255, 0.65);
+        z-index: 100;
+        gap: 10px;
+    }
+
+    #addMoreBtn,
+    #exportExcelBtn,
+    #submitAllBtn {
+        padding: 13px 10px;
+        font-size: 13px;
+        border-radius: 12px;
+    }
+
+    .card-actions {
+        padding-top: 12px;
+        margin-top: 12px;
+    }
+
+    .btn-action {
+        padding: 11px;
+        font-size: 13px;
     }
 }
 

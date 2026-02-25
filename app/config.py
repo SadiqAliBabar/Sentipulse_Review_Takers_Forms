@@ -8,6 +8,10 @@ class Settings(BaseSettings):
     DATABASE_NAME: str = "Sweetaffair"
     COLLECTION_NAME: str = "Sweetaffair_inhouse_reviews"
 
+    # Ginyaki uses different DB names on local vs server
+    # Local: sentipulse  |  Server: sentipulreviews
+    GINYAKI_DATABASE_NAME: str = "sentipulse"
+
     # Server Configuration
     PORT: int = 9013
     HOST: str = "0.0.0.0"

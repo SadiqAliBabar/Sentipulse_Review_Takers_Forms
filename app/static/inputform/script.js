@@ -4,6 +4,30 @@
    with local "Save/Update" functionality
    ======================================== */
 
+// ── Restaurant Lookup Data ──────────────────────────────────
+const RESTAURANT_DATA = {
+    "Ginyaki": {
+        "Bahria Town Ph:4, RWP": "Main Blvd, Phase 1-5 Bahria Town, Rawalpindi, 46000, Pakistan",
+        "Bahria Town Ph:7, RWP": "Bahria Food St, Bahria phase 7 Bahria Town Intellectual Village, Rawalpindi, 46000, Pakistan",
+        "Centaurus Mall, ISB": "Shop 13A, 4th Floor, The Centaurus Mall, F 8/4 F-8, Islamabad, Pakistan",
+        "F10 Tariq Market, ISB": "Plot 3A, Tariq market, Street 14, F-10/2 F 10/2 F-10, Islamabad, 46000, Pakistan",
+        "F7 Markaz, ISB": "Bhittai Rd, F-7 Markaz F 7 Markaz F-7, Islamabad, Pakistan"
+    },
+    "Benediction": {
+        "Benediction": "31 B1, Gulberg III, Lahore, Pakistan",
+        "Bennys By Benediction": "31-B1, Gulberg III, Lahore, Pakistan"
+    },
+    "Mojo": {
+        "Mojo Café": "R32F+F9F, Lane 7, D.H.A Phase 6 Nishat Commercial Area Phase 6 Defence Housing Authority, Karachi, 75500, Pakistan"
+    },
+    "Sweet Affairs": {
+        "Sweet Affairs": "G8CX+HMW, next to Ather Shahzad, 2 A/P Block P Gulberg 2, Lahore, Pakistan"
+    },
+    "MASALAWALA": {
+        "MASALAWALA": "9-e-2 Block E 2 Gulberg III, Lahore, Pakistan"
+    }
+};
+
 // ── Config apply (cosmetic only — no review logic) ─────────
 (function applyConfig() {
     function hexToRgb(hex) {
@@ -19,13 +43,36 @@
     root.style.setProperty('--primary-rgb', hexToRgb(cfg.primaryColor));
     const logo = document.querySelector('.logo');
     if (logo) { logo.src = cfg.logo; logo.alt = cfg.restaurantName; }
-    const nameEl = document.querySelector('.page-restaurant-name');
-    if (nameEl) nameEl.textContent = cfg.restaurantName;
     const subEl = document.querySelector('.page-subtext');
     if (subEl) subEl.textContent = cfg.formSubtext;
-    document.title = cfg.restaurantName + ' | SentiPulse';
 })();
 // ── End config apply ───────────────────────────────────────
+
+// ── Read brand/branch from URL path and initialise globals ──
+// Runs after applyConfig so URL-derived values take precedence
+(function initBrandFromURL() {
+    const parts = window.location.pathname.split('/');
+    // URL pattern: /pk/{brand_name}/{branch_name}/inputform
+    // parts: ['', 'pk', brand_name, branch_name, 'inputform']
+    const brandName = parts.length >= 3 ? decodeURIComponent(parts[2]) : 'Sweet Affairs';
+    const branchName = parts.length >= 4 ? decodeURIComponent(parts[3]) : 'Sweet Affairs';
+    const address = (RESTAURANT_DATA[brandName] && RESTAURANT_DATA[brandName][branchName])
+        ? RESTAURANT_DATA[brandName][branchName]
+        : '';
+
+    window._BRAND_NAME = brandName;
+    window._BRANCH_NAME = branchName;
+    window._BRANCH_ADDRESS = address;
+
+    const logoEl = document.getElementById('brandNameDisplay');
+    if (logoEl) logoEl.textContent = brandName;
+
+    document.title = brandName + ' | SentiPulse';
+
+    const addrEl = document.getElementById('branchAddressDisplay');
+    if (addrEl && address) addrEl.textContent = address;
+})();
+// ── End brand init ──────────────────────────────────────────
 
 document.addEventListener('DOMContentLoaded', function () {
     const reviewsWrapper = document.getElementById('reviewsWrapper');
@@ -179,26 +226,32 @@ document.addEventListener('DOMContentLoaded', function () {
                     <span class="status-indicator"></span>
                     <span class="review-label">REVIEW #${reviewCount}</span>
                 </div>
-                <div class="review-date-container">
-                    <div class="date-display">
-                        <span class="date-text"></span>
-                        <span class="calendar-icon"></span>
-                    </div>
-                    <input type="date" class="date-input">
-                </div>
-                <div class="review-time-container">
-                    <div class="time-display">
-                        <span class="time-text">00:00</span>
-                        <span class="clock-icon"></span>
-                    </div>
-                    <input type="time" class="time-input" value="00:00">
-                </div>
                 <div class="header-right">
                     <button type="button" class="btn-delete" title="Delete Review"></button>
                     <span class="toggle-icon">▼</span>
                 </div>
             </div>
+            <div class="mobile-tabs">
+                <button type="button" class="mobile-tab active" data-tab="info">Info</button>
+                <button type="button" class="mobile-tab" data-tab="ratings">Ratings</button>
+            </div>
             <div class="card-body">
+                <div class="card-datetime-row">
+                    <div class="review-date-container">
+                        <div class="date-display">
+                            <span class="date-text"></span>
+                            <span class="calendar-icon"></span>
+                        </div>
+                        <input type="date" class="date-input">
+                    </div>
+                    <div class="review-time-container">
+                        <div class="time-display">
+                            <span class="time-text">00:00</span>
+                            <span class="clock-icon"></span>
+                        </div>
+                        <input type="time" class="time-input" value="00:00">
+                    </div>
+                </div>
                 <div class="card-columns">
                     <div class="column-left">
                         <!-- Basic Info -->
@@ -347,6 +400,15 @@ document.addEventListener('DOMContentLoaded', function () {
             e.stopPropagation();
         });
 
+        // Mobile tab switching (Info / Ratings)
+        card.querySelectorAll('.mobile-tab').forEach(tab => {
+            tab.addEventListener('click', (e) => {
+                e.stopPropagation();
+                card.querySelectorAll('.mobile-tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                card.dataset.activeTab = tab.dataset.tab;
+            });
+        });
 
         // Toggle Expand/Collapse
         header.addEventListener('click', () => {
@@ -446,6 +508,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     if (el.type !== 'hidden') el.disabled = true;
                 });
                 card.querySelectorAll('.emoji-btn, .star, .toggle-option').forEach(el => el.style.pointerEvents = 'none');
+                card.querySelectorAll('.mobile-tab').forEach(el => el.style.pointerEvents = 'none');
             } else {
                 card.classList.remove('locked');
                 btnAction.innerText = "Save Review";
@@ -454,6 +517,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 // Enable all inputs
                 card.querySelectorAll('input, textarea').forEach(el => el.disabled = false);
                 card.querySelectorAll('.emoji-btn, .star, .toggle-option').forEach(el => el.style.pointerEvents = 'all');
+                card.querySelectorAll('.mobile-tab').forEach(el => el.style.pointerEvents = 'all');
 
                 // Keep hidden inputs working
                 card.querySelectorAll('input[type="hidden"]').forEach(el => el.disabled = false);
@@ -660,6 +724,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 const reviewData = {
                     User: card.querySelector('.reviewer-name').value,
+                    brand_name: window._BRAND_NAME || 'Sweet Affairs',
+                    branch_name: window._BRANCH_NAME || 'Sweet Affairs',
+                    address: window._BRANCH_ADDRESS || null,
                     INHOUSE_Reviewer_Contact: phoneVal || null,
                     INHOUSE_Reviewer_EmailID: emailVal || null,
                     Rating: parseInt(card.querySelector('.overall-rating-input').value) || null,

@@ -718,6 +718,184 @@
             }
         }
 
+        /* ===== MOBILE: FLOATING CENTRED CARD (<=600px) ===== */
+        @media (max-width: 600px) {
+
+            /* Page stays centered — card floats in the middle */
+            body {
+                height: 100svh;
+                min-height: unset;
+                overflow: hidden;
+                padding: 20px 16px;
+                align-items: center;
+                justify-content: center;
+            }
+
+            /* Container just constrains width */
+            .container {
+                width: 100%;
+                max-width: 440px;
+            }
+
+            /* Card auto-sizes to content, centred, max height guard */
+            .card {
+                width: 100%;
+                max-height: calc(100svh - 40px);
+                overflow-y: auto;
+                border-radius: 28px;
+                padding: 28px 22px 24px;
+                margin-bottom: 0;
+                /* Smooth entry on load */
+                animation: cardPop 0.45s cubic-bezier(0.34, 1.38, 0.64, 1) both;
+            }
+
+            @keyframes cardPop {
+                from { opacity: 0; transform: scale(0.93) translateY(24px); }
+                to   { opacity: 1; transform: scale(1)    translateY(0);    }
+            }
+
+            /* Smoother step transitions */
+            .step.active {
+                animation: stepIn 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+            }
+
+            @keyframes stepIn {
+                from { opacity: 0; transform: translateY(14px); }
+                to   { opacity: 1; transform: translateY(0);    }
+            }
+
+            /* Brand header — compact */
+            .brand-header {
+                margin-bottom: 18px;
+            }
+
+            .logo-glass-card {
+                padding: 9px 20px;
+                margin-bottom: 0;
+            }
+
+            .brand-logo-text {
+                font-size: 28px;
+            }
+
+            /* Progress dots — tighter */
+            .progress-dots {
+                margin-bottom: 18px;
+            }
+
+            /* Step content — natural spacing, slightly reduced */
+            .main-question {
+                font-size: 1.2em;
+                margin-bottom: 18px;
+                line-height: 1.4;
+            }
+
+            .emoji-container {
+                margin: 18px 0;
+                gap: 4px;
+            }
+
+            .emoji-circle {
+                width: 50px;
+                height: 50px;
+                font-size: 28px;
+            }
+
+            .emoji-label {
+                font-size: 0.67em;
+            }
+
+            .aspect-grid {
+                margin: 18px 0;
+                gap: 10px;
+            }
+
+            .aspect-button {
+                padding: 16px 12px;
+                font-size: 0.95em;
+                border-radius: 14px;
+            }
+
+            .star-rating {
+                margin: 18px 0;
+            }
+
+            .star {
+                font-size: 42px;
+            }
+
+            .options-container {
+                margin: 14px 0;
+                gap: 8px;
+            }
+
+            .section-title {
+                padding: 12px 16px;
+                margin-bottom: 16px;
+                font-size: 1em;
+            }
+
+            /* Comment / review textarea */
+            textarea.form-input {
+                min-height: 100px;
+                resize: none;
+            }
+
+            /* User details */
+            .user-details-container {
+                margin: 14px 0;
+            }
+
+            .input-wrapper {
+                padding: 14px 16px;
+                margin-bottom: 12px;
+                border-radius: 16px;
+            }
+
+            .input-icon {
+                font-size: 22px;
+                margin-right: 12px;
+                min-width: 28px;
+            }
+
+            .modern-input {
+                font-size: 1em;
+            }
+
+            .floating-label {
+                font-size: 0.78em;
+            }
+
+            /* Nav buttons */
+            .nav-buttons {
+                margin-top: 22px;
+                gap: 10px;
+            }
+
+            .btn {
+                padding: 14px 18px;
+                font-size: 0.97em;
+            }
+
+            /* Thank-you / goodbye page */
+            .goodbye-page {
+                margin: -28px -22px -24px -22px;
+                padding: 48px 24px;
+                min-height: 340px;
+                border-radius: 28px;
+            }
+
+            .goodbye-icon {
+                font-size: 56px;
+                margin-bottom: 16px;
+            }
+
+            .goodbye-message {
+                font-size: 1.05em;
+                margin-bottom: 24px;
+            }
+        }
+
         @media (max-height: 500px) and (orientation: landscape) {
             body {
                 padding: 8px;
@@ -1052,6 +1230,51 @@
     </div>
 
     <script>
+        // ── Restaurant Lookup Data ──────────────────────────────────
+        const RESTAURANT_DATA = {
+            "Ginyaki": {
+                "Bahria Town Ph:4, RWP": "Main Blvd, Phase 1-5 Bahria Town, Rawalpindi, 46000, Pakistan",
+                "Bahria Town Ph:7, RWP": "Bahria Food St, Bahria phase 7 Bahria Town Intellectual Village, Rawalpindi, 46000, Pakistan",
+                "Centaurus Mall, ISB": "Shop 13A, 4th Floor, The Centaurus Mall, F 8/4 F-8, Islamabad, Pakistan",
+                "F10 Tariq Market, ISB": "Plot 3A, Tariq market, Street 14, F-10/2 F 10/2 F-10, Islamabad, 46000, Pakistan",
+                "F7 Markaz, ISB": "Bhittai Rd, F-7 Markaz F 7 Markaz F-7, Islamabad, Pakistan"
+            },
+            "Benediction": {
+                "Benediction": "31 B1, Gulberg III, Lahore, Pakistan",
+                "Bennys By Benediction": "31-B1, Gulberg III, Lahore, Pakistan"
+            },
+            "Mojo": {
+                "Mojo Café": "R32F+F9F, Lane 7, D.H.A Phase 6 Nishat Commercial Area Phase 6 Defence Housing Authority, Karachi, 75500, Pakistan"
+            },
+            "Sweet Affairs": {
+                "Sweet Affairs": "G8CX+HMW, next to Ather Shahzad, 2 A/P Block P Gulberg 2, Lahore, Pakistan"
+            },
+            "MASALAWALA": {
+                "MASALAWALA": "9-e-2 Block E 2 Gulberg III, Lahore, Pakistan"
+            }
+        };
+
+        // ── Read brand/branch from URL path ────────────────────────
+        (function initBrandFromURL() {
+            const parts = window.location.pathname.split('/');
+            // URL pattern: /pk/{brand_name}/{branch_name}/qrform
+            const brandName = parts.length >= 3 ? decodeURIComponent(parts[2]) : 'Sweet Affairs';
+            const branchName = parts.length >= 4 ? decodeURIComponent(parts[3]) : 'Sweet Affairs';
+            const address = (RESTAURANT_DATA[brandName] && RESTAURANT_DATA[brandName][branchName])
+                ? RESTAURANT_DATA[brandName][branchName]
+                : '';
+
+            window._BRAND_NAME = brandName;
+            window._BRANCH_NAME = branchName;
+            window._BRANCH_ADDRESS = address;
+
+            document.title = brandName + ' | Feedback';
+
+            const logoEl = document.querySelector('.brand-logo-text');
+            if (logoEl) logoEl.textContent = brandName;
+        })();
+        // ── End brand init ──────────────────────────────────────────
+
         // Step 2 question — keyed by overall rating
         const RATING_QUESTIONS = {
             1: "We sincerely apologize. Please tell us what went wrong so we can make this right.",
@@ -1499,7 +1722,9 @@
 
         function prepareApiData() {
             const data = {
-                brand_name: "Sweet Affairs",
+                brand_name: window._BRAND_NAME || 'Sweet Affairs',
+                branch_name: window._BRANCH_NAME || 'Sweet Affairs',
+                address: window._BRANCH_ADDRESS || null,
                 user: surveyData.userName,
                 rating: surveyData.overallRating,
                 text: surveyData.humanReadableReview || null,

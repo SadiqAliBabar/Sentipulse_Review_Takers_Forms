@@ -11,3 +11,9 @@ wheels/
 
 # Environment variables
 .env
+
+# Claude Code session data
+.claude/
+
+# Generated QR code images
+scripts/qr_codes/

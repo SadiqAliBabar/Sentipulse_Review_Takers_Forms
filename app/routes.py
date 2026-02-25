@@ -10,18 +10,51 @@ from datetime import datetime
 
 router = APIRouter()
 
+# ── Brand → Database / Collection mapping ──────────────────
+# Collection convention: {BrandKey}_inhouse_reviews
+# Ginyaki DB name comes from env (sentipulse locally, sentipulreviews on server)
+_BRAND_DB_MAP = {
+    "sweet affairs":  ("Sweetaffair",                      "Sweetaffair_inhouse_reviews"),
+    "mojo":           ("Mojo",                             "Mojo_inhouse_reviews"),
+    "benediction":    ("Benediction",                       "Benediction_inhouse_reviews"),
+    "masalawala":     ("MASALAWALA",                       "MASALAWALA_inhouse_reviews"),
+    "ginyaki":        (None,                               "ginyaki_inhouse_reviews"),
+    # None db → resolved at runtime from settings.GINYAKI_DATABASE_NAME
+}
+
+def _resolve_db_collection(brand_name: str):
+    """Return (db_name, collection_name) for a given brand."""
+    key = (brand_name or "").strip().lower()
+    entry = _BRAND_DB_MAP.get(key)
+    if entry is None:
+        # Unknown brand — fall back to env defaults
+        return settings.DATABASE_NAME, settings.COLLECTION_NAME
+    db_name, collection = entry
+    if db_name is None:  # Ginyaki case
+        db_name = settings.GINYAKI_DATABASE_NAME
+    return db_name, collection
+# ── End brand mapping ───────────────────────────────────────
+
 @router.post("/submit-reviews")
 async def submit_reviews(
-    reviews: List[ReviewRecord], 
-    collection: Optional[str] = Query(None, description="Optional collection name override")
+    reviews: List[ReviewRecord],
+    collection: Optional[str] = Query(None, description="Optional collection name override"),
+    db: Optional[str] = Query(None, description="Optional database name override")
 ):
     try:
         # Convert Pydantic models to dicts using aliases (lowercase) for MongoDB
         reviews_dicts = [review.model_dump(by_alias=True) for review in reviews]
-        
-        # Save to database
-        count = await save_reviews(reviews_dicts, collection_override=collection)
-        
+
+        # Resolve db/collection from brand name (first review), allow manual overrides
+        brand_name = reviews[0].Brand_Name if reviews else ""
+        db_name, collection_name = _resolve_db_collection(brand_name)
+        db_name = db or db_name
+        collection_name = collection or collection_name
+
+        print(f"📦 Saving {len(reviews_dicts)} reviews → DB: {db_name} | Collection: {collection_name}")
+
+        count = await save_reviews(reviews_dicts, db_name=db_name, collection_name=collection_name)
+
         return {
             "status": "success",
             "message": f"Successfully saved {count} reviews!",
@@ -34,8 +67,9 @@ async def submit_reviews(
 @router.post("/submit-survey")
 async def submit_survey(review: ReviewRecord):
     try:
-        # Save a single review (from QR form) using aliases (lowercase)
-        count = await save_reviews([review.model_dump(by_alias=True)], collection_override=settings.COLLECTION_NAME)
+        db_name, collection_name = _resolve_db_collection(review.Brand_Name)
+        print(f"📦 Saving survey → DB: {db_name} | Collection: {collection_name}")
+        count = await save_reviews([review.model_dump(by_alias=True)], db_name=db_name, collection_name=collection_name)
         return {"status": "success", "message": "Feedback received!", "count": count}
     except Exception as e:
         print(f"Error saving survey: {e}")
@@ -92,10 +126,13 @@ async def health_check():
     return {"status": "healthy"}
 
 @router.get("/export-reviews")
-async def export_reviews(collection: Optional[str] = Query(None)):
+async def export_reviews(
+    collection: Optional[str] = Query(None),
+    db: Optional[str] = Query(None)
+):
     try:
         # Fetch data from MongoDB
-        data = await get_all_reviews(collection_override=collection)
+        data = await get_all_reviews(db_name=db, collection_name=collection)
         
         if not data:
             raise HTTPException(status_code=404, detail="No reviews found to export.")
