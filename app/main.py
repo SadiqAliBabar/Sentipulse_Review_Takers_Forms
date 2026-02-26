@@ -30,10 +30,7 @@ async def root():
             "Input Form": "/pk/{brand_name}/{branch_name}/inputform",
             "QR Form": "/pk/{brand_name}/{branch_name}/qrform"
         },
-        "config": {
-            "database": settings.DATABASE_NAME,
-            "collection": settings.COLLECTION_NAME
-        }
+        "note": "Database and collection are derived dynamically from URL path parameters (brand_name / branch_name)"
     }
 
 if __name__ == "__main__":

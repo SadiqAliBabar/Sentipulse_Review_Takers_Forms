@@ -1,0 +1,20 @@
+# Python >= 3.12 required (tested on Python 3.14.0)
+
+# ── Core API framework ──────────────────────────────────────────────────────
+fastapi>=0.132.0
+uvicorn[standard]>=0.41.0
+
+# ── Database (MongoDB async driver) ────────────────────────────────────────
+motor>=3.7.1
+
+# ── Data processing & Excel export ─────────────────────────────────────────
+pandas>=3.0.1
+openpyxl>=3.1.5
+
+# ── Validation & settings ───────────────────────────────────────────────────
+pydantic>=2.12.5
+pydantic-settings>=2.13.1
+
+# ── QR code generation (scripts/generate_qr.py) ────────────────────────────
+qrcode[pil]>=8.0
+pillow>=11.0
